@@ -5,7 +5,7 @@ AZURE_OPENAI_API_VERSION = "2023-05-15"
 
 EMBEDDING_MODEL = os.getenv("OPENAI_EMBEDDING_MODEL")
 
-GS_CREDENTIALS_PATH = "config/gs_credentials.json"
+GS_CREDENTIALS_PATH = "/config/gs_credentials.json"
 
 SHEET_ID = os.getenv("SHEET_ID")
 WORKSHEET_NAME = os.getenv("WORKSHEET_NAME")
