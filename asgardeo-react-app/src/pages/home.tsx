@@ -24,7 +24,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { default as authConfig } from "../config.json";
+// import { default as authConfig } from "../config.json";
 import REACT_LOGO from "../images/react-logo.png";
 import { DefaultLayout } from "../layouts/default";
 import { AuthenticationResponse } from "../components";
@@ -32,6 +32,7 @@ import { ChatBot } from "../components/ChatBot";
 import { useLocation } from "react-router-dom";
 import { LogoutRequestDenied } from "../components/LogoutRequestDenied";
 import { USER_DENIED_LOGOUT } from "../constants/errors";
+import { authConfig } from "../app";
 
 interface DerivedState {
   authenticateResponse: BasicUserInfo;

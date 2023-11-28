@@ -21,9 +21,30 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./app.css";
-import { default as authConfig } from "./config.json";
+// import { default as authConfig } from "./config.json";
 import { ErrorBoundary } from "./error-boundary";
 import { HomePage, NotFoundPage } from "./pages";
+
+interface Config {
+    redirectUrl: string;
+    asgardeoClientId: string;
+    asgardeoBaseUrl: string;
+    choreoApiUrl: string;
+  }
+
+declare global {
+    interface Window {
+      config: Config;
+    }
+  }
+
+export const authConfig = {
+    signInRedirectURL: window.config.redirectUrl,
+    signOutRedirectURL: window.config.redirectUrl,
+    clientID: window.config.asgardeoClientId,
+    baseUrl: window.config.asgardeoBaseUrl,
+    scope: ["openid", "profile"],
+  };
 
 const AppContent: FunctionComponent = (): ReactElement => {
     const { signIn, error } = useAuthContext();
