@@ -18,7 +18,8 @@
     },
     "include": [
         "typings/**/*",
-        "src/**/*"
+        "src/**/*", 
+        "config.js"    
     ],
     "exclude": [
         "node_modules",
