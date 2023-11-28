@@ -47,7 +47,8 @@ export const authConfig = {
   };
 
 const AppContent: FunctionComponent = (): ReactElement => {
-    const { signIn, error } = useAuthContext();
+    const { error } = useAuthContext();
+    console.log("authconfig", authConfig);
 
     return (
         <ErrorBoundary error={error}>
