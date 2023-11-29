@@ -1,35 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Tab } from "@headlessui/react";
-import { getBooks } from "./api/books/get-books";
-import { Book } from "./api/books/types/book";
-import groupBy from "lodash/groupBy";
-import AddItem from "./components/modal/fragments/add-item";
-import { deleteBooks } from "./api/books/delete-books";
-import { BasicUserInfo, useAuthContext } from "@asgardeo/auth-react";
-import { Dictionary } from "lodash";
-import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import ChatBot from "./ChatBot";
-import { getAnswer } from "./api/chat";
-
-export function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { useAuthContext } from "@asgardeo/auth-react";
+import ChatBot from "./components/ChatBot";
 
 export default function App() {
-  const [readList, setReadList] = useState<Dictionary<Book[]> | null>(null);
-  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const {
-    signIn,
-    signOut,
-    getAccessToken,
-    isAuthenticated,
-    getBasicUserInfo,
-    state,
-  } = useAuthContext();
+  const { signIn, signOut, isAuthenticated } = useAuthContext();
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
-  const [user, setUser] = useState<BasicUserInfo | null>(null);
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -40,59 +16,16 @@ export default function App() {
       const isSignedIn = await isAuthenticated();
       setSignedIn(isSignedIn);
       setIsAuthLoading(false);
-      return isSignedIn;
     }
-    signInCheck().then((res) => {
-      if (res) {
-        // getReadingList();
-        // getUser();
-      } else {
-        console.log("User has not signed in");
-      }
-    });
+    signInCheck();
   }, []);
 
-  // async function getUser() {
-  //   setIsLoading(true);
-  //   const userResponse = await getBasicUserInfo();
-  //   setUser(userResponse);
-  //   setIsLoading(false);
-  // }
-
-  // async function getReadingList() {
-  //   if (signedIn) {
-  //     setIsLoading(true);
-  //     const accessToken = await getAccessToken();
-  //     getBooks(accessToken)
-  //       .then((res) => {
-  //         const grouped = groupBy(res.data, (item) => item.status);
-  //         setReadList(grouped);
-  //         setIsLoading(false);
-  //       })
-  //       .catch((e) => {
-  //         console.log(e);
-  //       });
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   if (!isAddItemOpen) {
-  //     getReadingList();
-  //   }
-  // }, [isAddItemOpen]);
-
-  // const handleDelete = async (id: string) => {
-  //   const accessToken = await getAccessToken();
-  //   setIsLoading(true);
-  //   await deleteBooks(accessToken, id);
-  //   getReadingList();
-  //   setIsLoading(false);
-  // };
-
   const handleSignIn = async () => {
+    setIsAuthLoading(true);
     signIn()
       .then(() => {
         setSignedIn(true);
+        setIsAuthLoading(false);
       })
       .catch((e) => {
         console.log(e);
@@ -105,15 +38,9 @@ export default function App() {
 
   if (!signedIn) {
     return (
-      // <button
-      //   className="float-right bg-black bg-opacity-20 p-2 rounded-md text-sm my-3 font-medium text-white"
-      //   onClick={handleSignIn}
-      // >
-      //   Login
-      // </button>
       <div className="content">
-        <h1 className={"header-title"}>Choreo Q&A Bot</h1>
-        <h4 className={"spa-app-description"}>
+        <h1 className="header-title">Choreo Q&A Bot</h1>
+        <h4 className="header-description">
           Sample demo of a Q&A chatbot for&nbsp;
           <a
             href="https://wso2.com/choreo/docs/"
@@ -137,136 +64,16 @@ export default function App() {
   }
 
   return (
-      <div className="content">
-        <ChatBot />
-        <button
-          className="btn primary mt-4"
-          onClick={() => {
-            signOut();
-          }}
-        >
-          Logout
-        </button>
-      </div>
-    // <div className="header-2 w-screen h-screen overflow-hidden">
-    //   <nav className="bg-white py-2 md:py-2">
-    //     <div className="container px-4 mx-auto md:flex md:items-center">
-    //       <div className="flex justify-between items-center">
-    //         {user && (
-    //           <a href="#" className="font-bold text-xl text-[#36d1dc]">
-    //             {user?.orgName}
-    //           </a>
-    //         )}
-    //         <button
-    //           className="border border-solid border-gray-600 px-3 py-1 rounded text-gray-600 opacity-50 hover:opacity-75 md:hidden"
-    //           id="navbar-toggle"
-    //         >
-    //           <i className="fas fa-bars"></i>
-    //         </button>
-    //       </div>
-
-    //       <div
-    //         className="hidden md:flex flex-col md:flex-row md:ml-auto mt-3 md:mt-0"
-    //         id="navbar-collapse"
-    //       >
-    //         <button
-    //           className="float-right bg-[#5b86e5] p-2 rounded-md text-sm my-3 font-medium text-white"
-    //           onClick={() => signOut()}
-    //         >
-    //           Logout
-    //         </button>
-    //       </div>
-    //     </div>
-    //   </nav>
-
-    //   <div className="py-3 md:py-6">
-    //     <div className="container px-4 mx-auto flex justify-center">
-    //       <div className="w-full max-w-lg px-2 py-16 sm:px-0 mb-20">
-    //         <div className="flex justify-between">
-    //           <p className="text-4xl text-white mb-3 font-bold">Reading List</p>
-    //           <div className="container w-auto">
-    //             <button
-    //               className="float-right bg-black bg-opacity-20 p-2 rounded-md text-sm my-3 font-medium text-white h-10"
-    //               onClick={() => setIsAddItemOpen(true)}
-    //             >
-    //               + Add New
-    //             </button>
-    //             <button
-    //               className="float-right bg-black bg-opacity-20 p-2 rounded-md text-sm my-3 font-medium text-white w-10 h-10 mr-1"
-    //               onClick={() => getReadingList()}
-    //             >
-    //               <ArrowPathIcon />
-    //             </button>
-    //           </div>
-    //         </div>
-    //         {readList && (
-    //           <Tab.Group>
-    //             <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-    //               {Object.keys(readList).map((val) => (
-    //                 <Tab
-    //                   key={val}
-    //                   className={({ selected }) =>
-    //                     classNames(
-    //                       "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-    //                       "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-    //                       selected
-    //                         ? "bg-white shadow"
-    //                         : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-    //                     )
-    //                   }
-    //                 >
-    //                   {val}
-    //                 </Tab>
-    //               ))}
-    //             </Tab.List>
-    //             <Tab.Panels className="mt-2">
-    //               {Object.values(readList).map((books: Book[], idx) => (
-    //                 <Tab.Panel
-    //                   key={idx}
-    //                   className={
-    //                     isLoading
-    //                       ? classNames(
-    //                           "rounded-xl bg-white p-3 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 animate-pulse"
-    //                         )
-    //                       : classNames(
-    //                           "rounded-xl bg-white p-3 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-    //                         )
-    //                   }
-    //                 >
-    //                   <ul>
-    //                     {books.map((book) => (
-    //                       <div className="flex justify-between">
-    //                         <li
-    //                           key={book.id}
-    //                           className="relative rounded-md p-3"
-    //                         >
-    //                           <h3 className="text-sm font-medium leading-5">
-    //                             {book.title}
-    //                           </h3>
-
-    //                           <ul className="mt-1 flex space-x-1 text-xs font-normal leading-4 text-gray-500">
-    //                             <li>{book.author}</li>
-    //                             <li>&middot;</li>
-    //                           </ul>
-    //                         </li>
-    //                         <button
-    //                           className="float-right bg-red-500 text-white rounded-md self-center text-xs p-2 mr-2"
-    //                           onClick={() => handleDelete(book.id!)}
-    //                         >
-    //                           Delete
-    //                         </button>
-    //                       </div>
-    //                     ))}
-    //                   </ul>
-    //                 </Tab.Panel>
-    //               ))}
-    //             </Tab.Panels>
-    //           </Tab.Group>
-    //         )}
-    //         <AddItem isOpen={isAddItemOpen} setIsOpen={setIsAddItemOpen} />
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
+    <div className="content">
+      <ChatBot />
+      <button
+        className="btn primary mt-4"
+        onClick={() => {
+          signOut();
+        }}
+      >
+        Logout
+      </button>
+    </div>
   );
 }

@@ -1,12 +1,11 @@
-import React, { ReactElement, FunctionComponent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 interface BotMessageProps {
   fetchMessage: () => any;
 }
 
-
 export default function BotMessage(props: BotMessageProps) {
-  const {fetchMessage} = props;
+  const { fetchMessage } = props;
   const [isLoading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 

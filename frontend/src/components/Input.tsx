@@ -1,18 +1,18 @@
-import React, { ReactElement, FunctionComponent, useState } from "react";
+import React, { useState } from "react";
 
 interface InputProps {
   onSend: (text: string) => void;
 }
 
-export default function Input (props: InputProps) {
+export default function Input(props: InputProps) {
   const { onSend } = props;
   const [text, setText] = useState("");
 
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e: any) => {
     setText(e.target.value);
   };
 
-  const handleSend = (e:any) => {
+  const handleSend = (e: any) => {
     e.preventDefault();
     onSend(text);
     setText("");

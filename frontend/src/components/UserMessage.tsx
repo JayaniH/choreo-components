@@ -1,4 +1,4 @@
-import React, { ReactElement, FunctionComponent } from "react";
+import React from "react";
 
 interface UserMessageProps {
   text: string;
