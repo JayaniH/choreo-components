@@ -166,7 +166,6 @@ h4 a {
   outline: none;
   padding: 16px 52px 16px 10px;
   width: 100%;
-  -webkit-appearance: none;
 }
 
 .input > form > input:focus {
